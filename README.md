@@ -35,7 +35,7 @@ A Rails application implementing advanced SMS verification for voting participat
 
 1. **Clone and install dependencies:**
    ```bash
-   git clone <repository>
+   git clone https://github.com/HamzaK106/voting-app
    cd voting_app
    bundle install
    ```
