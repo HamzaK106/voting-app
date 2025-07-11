@@ -1,0 +1,85 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h1 class="text-center">Voting App</h1>
+        </div>
+        <div class="card-body">
+          <% if user_signed_in? %>
+            <div class="text-center mb-4">
+              <h3>Welcome, <%= current_user.email %></h3>
+              
+              <!-- Phone Verification Status -->
+              <div class="alert <%= current_user.phone_verified? ? 'alert-success' : 'alert-warning' %>">
+                <% if current_user.phone_verified? %>
+                  <strong>✓ Phone Verified</strong> - You can participate in voting
+                <% else %>
+                  <strong>⚠ Phone Not Verified</strong> - Please verify your phone number to participate in voting
+                <% end %>
+              </div>
+              
+              <!-- Phone Number Display -->
+              <% if current_user.phone.present? %>
+                <p><strong>Phone:</strong> <%= current_user.phone %></p>
+              <% end %>
+            </div>
+
+            <div class="mb-4 text-center">
+              <%= link_to "View Elections", elections_path, class: "btn btn-lg btn-success me-2" %>
+              <%= link_to "Manage Delegation", delegation_path, class: "btn btn-lg btn-info" %>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">SMS Verification</h5>
+                    <% if current_user.phone_verified? %>
+                      <p class="card-text text-success">
+                        <strong>Phone Verified!</strong> You can now vote and participate in elections.
+                      </p>
+                      <%= link_to "View Verification Status", "#", class: "btn btn-success", disabled: true %>
+                    <% else %>
+                      <p class="card-text">
+                        Verify your phone number to participate in voting
+                      </p>
+                      <%= link_to "Verify Phone Number", request_sms_verification_path, class: "btn btn-primary" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h5 class="card-title">Account Settings</h5>
+                    <p class="card-text">Update your profile and phone number</p>
+                    <%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-outline-primary" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Admin Link - Only for admin users -->
+            <% if current_user.admin? %>
+              <div class="mt-4 text-center">
+                <%= link_to "Admin Dashboard", admin_verification_attempts_path, class: "btn btn-warning" %>
+              </div>
+            <% end %>
+            
+          <% else %>
+            <div class="text-center">
+              <h3>Welcome to the Voting App</h3>
+              <p class="lead">Please sign in or register to continue</p>
+              <div class="mt-4">
+                <%= link_to "Sign In", new_user_session_path, class: "btn btn-primary btn-lg me-3" %>
+                <%= link_to "Register", new_user_registration_path, class: "btn btn-outline-primary btn-lg" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

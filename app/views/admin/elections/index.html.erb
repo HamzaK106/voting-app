@@ -1,0 +1,32 @@
+<div class="container mt-5">
+  <h1>Manage Elections</h1>
+  <div class="mb-3">
+    <%= link_to "New Election", new_admin_election_path, class: "btn btn-primary" %>
+    <%= link_to "Back to Admin Dashboard", admin_verification_attempts_path, class: "btn btn-secondary ms-2" %>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Voting Period</th>
+        <th>Candidates</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @elections.each do |election| %>
+        <tr>
+          <td><%= election.title %></td>
+          <td><%= election.starts_at.strftime('%Y-%m-%d %H:%M') %> - <%= election.ends_at.strftime('%Y-%m-%d %H:%M') %></td>
+          <td>
+            <%= link_to "Manage Candidates", admin_election_candidates_path(election), class: "btn btn-sm btn-outline-info" %>
+          </td>
+          <td>
+            <%= link_to "Edit", edit_admin_election_path(election), class: "btn btn-sm btn-outline-primary" %>
+            <%= link_to "Delete", admin_election_path(election), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-outline-danger ms-1" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

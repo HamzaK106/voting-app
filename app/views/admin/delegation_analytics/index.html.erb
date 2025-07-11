@@ -1,0 +1,63 @@
+<div class="container mt-5">
+  <h1>Delegation Analytics Dashboard</h1>
+
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <h5 class="card-title">Total Delegated Votes</h5>
+          <h2><%= @total_delegated_votes %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Top Delegates</h5>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Delegated Votes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @top_delegates.each do |user| %>
+                <tr>
+                  <td><%= user.email %></td>
+                  <td><%= user.all_delegators.count %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt-4">
+    <div class="card-body">
+      <h5 class="card-title">Delegation Stats (All Users)</h5>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Delegated Votes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @delegation_stats.each do |user, count| %>
+            <tr>
+              <td><%= user.email %></td>
+              <td><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <%= link_to 'Back to Admin Dashboard', admin_verification_attempts_path, class: 'btn btn-secondary' %>
+  </div>
+</div>

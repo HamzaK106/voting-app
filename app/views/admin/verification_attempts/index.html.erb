@@ -1,0 +1,135 @@
+<div class="container-fluid mt-4">
+  <h1>Verification Attempts Dashboard</h1>
+
+  <!-- Admin Navigation -->
+  <div class="mb-4">
+    <div class="btn-group" role="group">
+      <%= link_to "Verification Attempts", admin_verification_attempts_path, class: "btn btn-primary active" %>
+      <%= link_to "User Management", admin_users_path, class: "btn btn-outline-primary" %>
+      <%= link_to "Manage Elections", admin_elections_path, class: "btn btn-outline-success" %>
+      <%= link_to "Delegation Analytics", admin_delegation_analytics_index_path, class: "btn btn-outline-info" %>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h5 class="card-title">Total Attempts</h5>
+          <h2><%= @total_attempts %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h5 class="card-title">Successful</h5>
+          <h2><%= @successful_attempts %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-danger text-white">
+        <div class="card-body">
+          <h5 class="card-title">Failed</h5>
+          <h2><%= @failed_attempts %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <h5 class="card-title">Last 24 Hours</h5>
+          <h2><%= @recent_attempts %></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h5>Filters</h5>
+    </div>
+    <div class="card-body">
+      <%= form_with url: admin_verification_attempts_path, method: :get, local: true do |form| %>
+        <div class="row">
+          <div class="col-md-3">
+            <%= form.label :success, "Status", class: "form-label" %>
+            <%= form.select :success, 
+                options_for_select([
+                  ['All', ''],
+                  ['Successful', 'true'],
+                  ['Failed', 'false']
+                ], params[:success]), 
+                {}, 
+                class: "form-select" %>
+          </div>
+          <div class="col-md-3">
+            <%= form.label :date_from, "From Date", class: "form-label" %>
+            <%= form.date_field :date_from, value: params[:date_from], class: "form-control" %>
+          </div>
+          <div class="col-md-3">
+            <%= form.label :date_to, "To Date", class: "form-label" %>
+            <%= form.date_field :date_to, value: params[:date_to], class: "form-control" %>
+          </div>
+          <div class="col-md-3">
+            <%= form.submit "Filter", class: "btn btn-primary mt-4" %>
+            <%= link_to "Clear", admin_verification_attempts_path, class: "btn btn-secondary mt-4" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <!-- Verification Attempts Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5>Verification Attempts</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Phone</th>
+              <th>Code</th>
+              <th>Status</th>
+              <th>IP Address</th>
+              <th>User Agent</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @verification_attempts.each do |attempt| %>
+              <tr>
+                <td><%= attempt.user.email %></td>
+                <td><%= attempt.phone %></td>
+                <td><code><%= attempt.code %></code></td>
+                <td>
+                  <% if attempt.success? %>
+                    <span class="badge bg-success">Success</span>
+                  <% else %>
+                    <span class="badge bg-danger">Failed</span>
+                  <% end %>
+                </td>
+                <td><small><%= attempt.ip_address %></small></td>
+                <td><small><%= truncate(attempt.user_agent, length: 50) %></small></td>
+                <td><%= attempt.created_at.strftime("%Y-%m-%d %H:%M") %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <% if @verification_attempts.respond_to?(:current_page) %>
+        <div class="d-flex justify-content-center">
+          <%= paginate @verification_attempts if defined?(Kaminari) %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="container mt-5">
+  <h2>Choose Your Delegate</h2>
+  <div class="card">
+    <div class="card-body">
+      <%= form_with url: delegation_path, method: :patch, local: true do |f| %>
+        <div class="mb-3">
+          <label for="delegate_id" class="form-label">Select a user to delegate your vote to:</label>
+          <select name="user[delegate_id]" id="delegate_id" class="form-select">
+            <option value="">-- No Delegate --</option>
+            <% @users.each do |user| %>
+              <option value="<%= user.id %>" <%= 'selected' if @delegate && @delegate.id == user.id %>><%= user.email %></option>
+            <% end %>
+          </select>
+        </div>
+        <div class="d-grid">
+          <%= f.submit 'Save Delegate', class: 'btn btn-primary' %>
+        </div>
+      <% end %>
+      <div class="mt-3">
+        <%= link_to 'Back', delegation_path, class: 'btn btn-outline-secondary' %>
+      </div>
+    </div>
+  </div>
+</div>

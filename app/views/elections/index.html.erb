@@ -1,0 +1,46 @@
+<div class="container mt-5">
+  <h1>Active Elections</h1>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Voting Period</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% now = Time.current %>
+      <% @elections.each do |election| %>
+        <% status = if now < election.starts_at
+          'Upcoming'
+        elsif now > election.ends_at
+          'Closed'
+        else
+          'Open'
+        end %>
+        <tr>
+          <td><%= election.title %></td>
+          <td><%= election.starts_at.strftime('%Y-%m-%d %H:%M') %> - <%= election.ends_at.strftime('%Y-%m-%d %H:%M') %></td>
+          <td>
+            <% if status == 'Open' %>
+              <span class="badge bg-success">Open</span>
+            <% elsif status == 'Upcoming' %>
+              <span class="badge bg-warning text-dark">Upcoming</span>
+            <% else %>
+              <span class="badge bg-secondary">Closed</span>
+            <% end %>
+          </td>
+          <td>
+            <% if status == 'Open' %>
+              <%= link_to "Vote", election_path(election), class: "btn btn-primary btn-sm" %>
+            <% else %>
+              <%= link_to "View", election_path(election), class: "btn btn-outline-secondary btn-sm" %>
+            <% end %>
+            <%= link_to "Results", results_election_path(election), class: "btn btn-info btn-sm ms-1" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

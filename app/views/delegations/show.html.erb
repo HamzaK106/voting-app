@@ -1,0 +1,35 @@
+<div class="container mt-5">
+  <h2>Delegation Status</h2>
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Your Delegate</h5>
+      <% if @delegate %>
+        <p>You are delegating your vote to: <strong><%= @delegate.email %></strong></p>
+        <div class="d-flex gap-2">
+          <%= link_to 'Change Delegate', edit_delegation_path, class: 'btn btn-outline-primary' %>
+          <%= button_to 'Remove Delegate', delegation_path, method: :patch, params: { user: { delegate_id: nil } }, class: 'btn btn-outline-danger', data: { confirm: 'Remove your delegate?' } %>
+        </div>
+      <% else %>
+        <p>You are not delegating your vote.</p>
+        <%= link_to 'Choose Delegate', edit_delegation_path, class: 'btn btn-primary' %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">Users Delegating to You</h5>
+      <% if @delegators.any? %>
+        <ul class="list-group">
+          <% @delegators.each do |user| %>
+            <li class="list-group-item"><%= user.email %></li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>No users are currently delegating to you.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <%= link_to 'Back to Dashboard', root_path, class: 'btn btn-secondary' %>
+</div>

@@ -1,0 +1,80 @@
+<div class="container mt-5">
+  <h1>Results: <%= @election.title %></h1>
+  <p><%= @election.description %></p>
+
+  <% if @rcv.rounds.empty? %>
+    <div class="alert alert-info">No ballots have been cast yet.</div>
+  <% else %>
+    <h3>Round-by-Round Results</h3>
+    <% @rcv.rounds.each_with_index do |round, idx| %>
+      <div class="card mb-3">
+        <div class="card-header">
+          <strong>Round <%= round[:round] %></strong>
+          <% if @rcv.eliminated_order[idx] %>
+            <span class="ms-3 text-danger">Eliminated:
+              <% @rcv.eliminated_order[idx].each do |cid| %>
+                <%= @candidates[cid].name %><% unless cid == @rcv.eliminated_order[idx].last %>, <% end %>
+              <% end %>
+            </span>
+          <% end %>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>Candidate</th>
+                <th>Votes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% round[:results].each do |res| %>
+                <tr>
+                  <td><%= res[:candidate_name] %></td>
+                  <td><%= res[:votes] %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="alert alert-success">
+      <h4>Winner: <%= @candidates[@rcv.winner].name if @rcv.winner %></h4>
+    </div>
+  <% end %>
+
+  <h3>Ballot Audit Trail & Delegation Analytics</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Voter</th>
+        <th>Delegation Chain</th>
+        <th>Vote Weight</th>
+        <th>Delegated?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @ballots.each do |ballot| %>
+        <tr>
+          <td><%= ballot.user.email %></td>
+          <td><%= ballot.delegation_chain || ballot.user.id.to_s %></td>
+          <td><%= @rcv.ballot_weights[ballot.id] || 1 %></td>
+          <td>
+            <% if ballot.delegated? %>
+              <span class="badge bg-info">Delegated</span>
+            <% else %>
+              <span class="badge bg-secondary">Direct</span>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="mt-4">
+    <%= link_to "Export Results (CSV)", results_election_path(@election, format: :csv), class: "btn btn-outline-secondary me-2" %>
+    <%= link_to "Export Results (JSON)", results_election_path(@election, format: :json), class: "btn btn-outline-secondary" %>
+    <%= link_to "Back to Election", election_path(@election), class: "btn btn-secondary ms-2" %>
+  </div>
+</div>

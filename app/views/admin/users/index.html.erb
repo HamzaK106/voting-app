@@ -1,0 +1,78 @@
+<div class="container-fluid mt-4">
+  <h1>User Management</h1>
+  
+  <!-- Admin Navigation -->
+  <div class="mb-4">
+    <div class="btn-group" role="group">
+      <%= link_to "Verification Attempts", admin_verification_attempts_path, class: "btn btn-outline-primary" %>
+      <%= link_to "User Management", admin_users_path, class: "btn btn-primary active" %>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">
+      <h5>All Users</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Phone Verified</th>
+              <th>Admin Status</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @users.each do |user| %>
+              <tr>
+                <td><%= user.email %></td>
+                <td><%= user.phone || 'Not set' %></td>
+                <td>
+                  <% if user.phone_verified? %>
+                    <span class="badge bg-success">Verified</span>
+                  <% else %>
+                    <span class="badge bg-warning">Not Verified</span>
+                  <% end %>
+                </td>
+                <td>
+                  <% if user.is_admin? %>
+                    <span class="badge bg-danger">Admin</span>
+                  <% else %>
+                    <span class="badge bg-secondary">User</span>
+                  <% end %>
+                </td>
+                <td><%= user.created_at.strftime("%Y-%m-%d") %></td>
+                <td>
+                  <% unless user == current_user %>
+                    <%= link_to user.is_admin? ? "Remove Admin" : "Make Admin", 
+                    admin_toggle_admin_user_path(user), 
+                        method: :get,
+                        class: user.is_admin? ? "btn btn-sm btn-outline-danger" : "btn btn-sm btn-outline-success",
+                        data: { confirm: "Are you sure you want to #{user.is_admin? ? 'remove admin privileges from' : 'make admin'} #{user.email}?" } %>
+                  <% else %>
+                    <small class="text-muted">Current User</small>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      <% if @users.respond_to?(:current_page) %>
+        <div class="d-flex justify-content-center">
+          <%= paginate @users if defined?(Kaminari) %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="mt-3">
+    <%= link_to "Back to Home", root_path, class: "btn btn-secondary" %>
+  </div>
+</div>

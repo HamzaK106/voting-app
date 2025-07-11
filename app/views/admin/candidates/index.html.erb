@@ -1,0 +1,39 @@
+<div class="container mt-5">
+  <h1>Manage Candidates for: <%= @election.title %></h1>
+  <div class="mb-3">
+    <%= link_to "Back to Elections", admin_elections_path, class: "btn btn-secondary" %>
+  </div>
+
+  <h3>Add New Candidate</h3>
+  <%= form_with model: [ :admin, @election, @election.candidates.new ], local: true do |f| %>
+    <div class="row g-2 align-items-center">
+      <div class="col-auto">
+        <%= f.text_field :name, class: "form-control", placeholder: "Candidate name" %>
+      </div>
+      <div class="col-auto">
+        <%= f.submit "Add", class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <h3 class="mt-4">Current Candidates</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @candidates.each do |candidate| %>
+        <tr>
+          <td><%= candidate.name %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_election_candidate_path(@election, candidate), class: "btn btn-sm btn-outline-primary" %>
+            <%= link_to "Delete", admin_election_candidate_path(@election, candidate), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-sm btn-outline-danger ms-1" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div> 

@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  phone: MyString
+  code: MyString
+  success: false
+  ip_address: MyString
+  user_agent: MyText
+  created_at: 2025-07-10 13:01:41
+
+two:
+  user: two
+  phone: MyString
+  code: MyString
+  success: false
+  ip_address: MyString
+  user_agent: MyText
+  created_at: 2025-07-10 13:01:41

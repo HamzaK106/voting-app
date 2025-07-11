@@ -1,0 +1,56 @@
+<div class="container mt-5">
+  <h1><%= @election.title %></h1>
+  <p><%= @election.description %></p>
+  <p><strong>Voting Period:</strong> <%= @election.starts_at.strftime('%Y-%m-%d %H:%M') %> to <%= @election.ends_at.strftime('%Y-%m-%d %H:%M') %></p>
+
+  <% if @ballot %>
+    <div class="alert alert-success">You have already voted in this election.</div>
+  <% elsif !current_user.phone_verified? %>
+    <div class="alert alert-warning">
+      <h4>Phone Verification Required</h4>
+      <p>You must verify your phone number before participating in voting.</p>
+      <%= link_to "Verify Phone Number", request_sms_verification_path, class: "btn btn-primary" %>
+    </div>
+  <% else %>
+    <h3>Rank the candidates (drag to reorder):</h3>
+    <%= form_with url: election_ballots_path(@election), method: :post, local: true, id: "ballot-form", data: { controller: "sortable" } do |f| %>
+      <ul id="candidates-list" class="list-group mb-3" data-sortable-target="list">
+        <% @candidates.each do |candidate| %>
+          <li class="list-group-item d-flex align-items-center" data-id="<%= candidate.id %>">
+            <span class="handle me-2" style="cursor: grab;">&#9776;</span>
+            <%= candidate.name %>
+            <input type="hidden" name="ranking[]" value="<%= candidate.id %>">
+          </li>
+        <% end %>
+      </ul>
+      <div class="d-grid">
+        <%= f.submit "Submit Vote", class: "btn btn-primary btn-lg" %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <div class="mt-4">
+    <%= link_to "View Results", results_election_path(@election), class: "btn btn-outline-info" %>
+    <%= link_to "Back to Elections", elections_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js" %>
+<%= javascript_tag do %>
+  document.addEventListener("DOMContentLoaded", function() {
+    var list = document.getElementById("candidates-list");
+    if (list) {
+      new Sortable(list, {
+        handle: ".handle",
+        animation: 150,
+        onEnd: function () {
+          // Update hidden inputs to match new order
+          var items = list.querySelectorAll("li");
+          items.forEach(function(item, idx) {
+            item.querySelector('input[type="hidden"]').setAttribute('name', 'ranking[]');
+          });
+        }
+      });
+    }
+  });
+<% end %>
